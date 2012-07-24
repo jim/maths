@@ -1,3 +1,5 @@
+#!/usr/bin/env rbx
+
 require 'rubygems'
 require 'optparse'
 require 'ostruct'
@@ -7,18 +9,10 @@ $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 
 require 'maths'
 
-code = <<-CODE
-a = (2 + 5) * 3
-Print 2 * a
-x = 101 / 3
-c = 43
-Print x + c
-CODE
-
 options = OpenStruct.new
 options.run = true
 
-OptionParser.new do |opts|
+files = OptionParser.new do |opts|
   opts.banner = "Maths."
 
   opts.on('-p', '--parse', 'Print results of initial parse') do |p|
@@ -36,7 +30,14 @@ OptionParser.new do |opts|
   opts.on('-r', '--[no-]run', 'Execute the code') do |r|
     options.run = r
   end
-end.parse!
+end.permute!
+
+if files.empty?
+  puts "Please provide at least one filename: bin/maths path/tofile.maths"
+  exit 1
+end
+
+code = files.map { |f| File.read(f) }.join("\n")
 
 compiled = Maths::Compiler.compile(code) do |compiler|
   compiler.parser.print_tree if options.parse
