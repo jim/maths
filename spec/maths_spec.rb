@@ -70,15 +70,15 @@ describe Maths do
     assert_equal 2, maths("1\n1 + 1")
   end
 
-  it 'can set and reference variable' do
+  it 'sets and references a variable' do
     assert_equal 3, maths("a = 3\na")
   end
 
-  it 'can perform calculations with a variable' do
+  it 'performs calculations with a variable' do
     assert_equal 5, maths("a = 2\na + 3")
   end
 
-  it 'can eval multiple scripts in the same context' do
+  it 'evals multiple scripts in the same context' do
     maths('a = 3')
     assert_equal 3, maths('a')
   end
