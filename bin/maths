@@ -45,18 +45,17 @@ files = OptionParser.new do |opts|
   end
 end.permute!
 
-if files.any?
-  code = files.map { |f| File.read(f) }.join("\n")
+if files.any? && options.run
+  env = Maths::Environment.new
+  files.each do |file|
+    code = File.read(file)
 
-  compiled = Maths::Compiler.compile(code) do |compiler|
-    compiler.parser.print_tree if options.parse
-    compiler.transform.print_ast if options.graph
-    compiler.transform.print_sexp if options.sexp
+    env.eval(code, file) do |compiler|
+      compiler.parser.print_tree if options.parse
+      compiler.transform.print_ast if options.graph
+      compiler.transform.print_sexp if options.sexp
+    end
   end
-
-  Rubinius.run_script(compiled) if options.run
-else
-  if $stdin.tty?
-    repl
-  end
+elsif $stdin.tty?
+  repl
 end

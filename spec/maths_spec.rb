@@ -83,6 +83,12 @@ describe Maths do
     assert_equal 3, maths('a')
   end
 
+  it 'raises an exception when referencing an undefined variable' do
+    assert_raises RuntimeError do
+      maths('a')
+    end
+  end
+
   describe 'Print' do
 
     before do

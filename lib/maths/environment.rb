@@ -8,14 +8,15 @@ module Maths
                                           self)
     end
 
-    def eval(string)
+    def eval(string, filename = '(maths)')
       cm = Maths::Compiler::compile(string) do |c|
         c.generator.variable_scope = @binding.variables
+        yield c if block_given?
       end
 
       cm.scope = Rubinius::StaticScope.new(Maths::Runtime)
 
-      script = Rubinius::CompiledMethod::Script.new(cm, '(maths)', true)
+      script = Rubinius::CompiledMethod::Script.new(cm, filename, true)
       script.eval_source = string
       cm.scope.script = script
 

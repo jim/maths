@@ -1,7 +1,6 @@
 module Maths
-
-
   module AST
+
     class Node
       attr_accessor :line, :column
 
@@ -58,8 +57,9 @@ module Maths
         variables[name] = variable
       end
 
-      def assign_local_reference(node)
+      def assign_local_reference(node, create = true)
         unless reference = search_local(node.name)
+          return unless create
           variable = new_local node.name
           reference = variable.reference
         end
@@ -198,7 +198,15 @@ module Maths
         pos(g)
 
         unless @variable
-          g.state.scope.assign_local_reference self
+          g.state.scope.assign_local_reference self, false
+        end
+
+        if @variable.nil?
+          g.push_const :RuntimeError
+          g.push_literal "Reference to undefined variable '#{@name}'"
+          g.send :new, 1
+          g.raise_exc
+          return
         end
 
         @variable.get_bytecode(g)
