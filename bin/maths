@@ -9,6 +9,19 @@ $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 
 require 'maths'
 
+def repl
+  env = Maths::Environment.new
+  require 'readline'
+  puts "Welcome to maths. Type 'exit' to quit."
+  line = 1
+  loop do
+    code = Readline.readline "maths> "
+    exit 0 unless code and code != "exit"
+    next if code =~ /^\s*$/
+    puts env.eval(code)
+  end
+end
+
 options = OpenStruct.new
 options.run = true
 
@@ -32,17 +45,18 @@ files = OptionParser.new do |opts|
   end
 end.permute!
 
-if files.empty?
-  puts "Please provide at least one filename: bin/maths path/tofile.maths"
-  exit 1
+if files.any?
+  code = files.map { |f| File.read(f) }.join("\n")
+
+  compiled = Maths::Compiler.compile(code) do |compiler|
+    compiler.parser.print_tree if options.parse
+    compiler.transform.print_ast if options.graph
+    compiler.transform.print_sexp if options.sexp
+  end
+
+  Rubinius.run_script(compiled) if options.run
+else
+  if $stdin.tty?
+    repl
+  end
 end
-
-code = files.map { |f| File.read(f) }.join("\n")
-
-compiled = Maths::Compiler.compile(code) do |compiler|
-  compiler.parser.print_tree if options.parse
-  compiler.transform.print_ast if options.graph
-  compiler.transform.print_sexp if options.sexp
-end
-
-Rubinius.run_script(compiled) if options.run

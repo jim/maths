@@ -5,10 +5,14 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'maths'
 
 def maths(code)
-  Rubinius.run_script(Maths::Compiler.compile(code))
+  @env.eval(code)
 end
 
 describe Maths do
+
+  before do
+    @env = Maths::Environment.new
+  end
 
   it 'supports positive integers' do
     assert_equal 1, maths('1')
@@ -72,6 +76,11 @@ describe Maths do
 
   it 'can perform calculations with a variable' do
     assert_equal 5, maths("a = 2\na + 3")
+  end
+
+  it 'can eval multiple scripts in the same context' do
+    maths('a = 3')
+    assert_equal 3, maths('a')
   end
 
   describe 'Print' do

@@ -1,4 +1,6 @@
 module Maths
+
+
   module AST
     class Node
       attr_accessor :line, :column
@@ -15,22 +17,54 @@ module Maths
     class Script < Node
       include Rubinius::Compiler::LocalVariables
 
+      attr_accessor :variable_scope
+
       def initialize(expressions)
         @expressions = expressions
-        @variables = {}
+      end
+
+      def search_scopes(name)
+        depth = 1
+        scope = @variable_scope
+        while scope
+          if !scope.method.for_eval? and slot = scope.method.local_slot(name)
+            return Compiler::NestedLocalVariable.new(depth, slot)
+          elsif scope.eval_local_defined?(name, false)
+            return Compiler::EvalLocalVariable.new(name)
+          end
+
+          depth += 1
+          scope = scope.parent
+        end
+      end
+
+      # Returns a cached reference to a variable or searches all
+      # surrounding scopes for a variable. If no variable is found,
+      # it returns nil and a nested scope will create the variable
+      # in itself.
+      def search_local(name)
+        if variable = variables[name]
+          return variable.nested_reference
+        end
+
+        if variable = search_scopes(name)
+          variables[name] = variable
+          return variable.nested_reference
+        end
       end
 
       def new_local(name)
-        variable = Rubinius::Compiler::LocalVariable.new allocate_slot
+        variable = Rubinius::Compiler::EvalLocalVariable.new name
         variables[name] = variable
       end
 
       def assign_local_reference(node)
-        unless variable = variables[node.name]
+        unless reference = search_local(node.name)
           variable = new_local node.name
+          reference = variable.reference
         end
 
-        node.variable = variable.reference
+        node.variable = reference
       end
 
       def bytecode(g)
@@ -39,14 +73,6 @@ module Maths
           exp.bytecode(g)
         end
         g.pop_state
-      end
-
-      def local_count
-        @variables.size
-      end
-
-      def local_names
-        @variables.keys
       end
 
       def to_sexp

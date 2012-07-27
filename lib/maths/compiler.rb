@@ -16,6 +16,8 @@ module Maths
       stage :maths_generator
       next_stage Rubinius::Compiler::Encoder
 
+      attr_accessor :variable_scope
+
       def line_number(number)
         @line = number
       end
@@ -30,6 +32,7 @@ module Maths
       end
 
       def run
+        @input.variable_scope = @variable_scope if @variable_scope
         g = Rubinius::Generator.new
         g.name = :call
         g.file = @file.intern
