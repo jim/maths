@@ -21,6 +21,7 @@ describe Maths do
 
   it 'supports negative integers' do
     assert_equal -1, maths('-1')
+    assert_equal -1234567890, maths('-1234567890')
   end
 
   it 'supports floats' do
@@ -64,6 +65,22 @@ describe Maths do
   it 'allows parenthesis to manipulate eval order' do
     assert_equal  9, maths('(1 + 2) * 3')
     assert_equal 16, maths('2 * (3 + 5)')
+  end
+
+  it 'does not require spaces around operators' do
+    assert_equal 2, maths('1+1')
+    assert_equal 0, maths('1-1')
+    assert_equal 1, maths('1*1')
+    assert_equal 1, maths('1/1')
+    assert_equal 4, maths('8+-4')
+  end
+
+  it 'does not require spaces around assignments' do
+    maths('a=3')
+  end
+
+  it 'does not require spaces around parenthesis' do
+    maths('4*(9-2)')
   end
 
   it 'handles multiline code' do

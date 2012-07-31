@@ -40,21 +40,21 @@ module Maths
 
     rule(:assignment) {
       ( variable.as(:left) >> space? >>
-        op_assign.as(:op) >> space >>
+        op_assign.as(:op) >> space? >>
         assignment.as(:right) ) |
       additive
     }
 
     rule(:additive) {
       ( multiplicative.as(:left) >> space? >>
-        ( op_plus | op_minus ).as(:op) >> space >>
+        ( op_plus | op_minus ).as(:op) >> space? >>
         additive.as(:right) ) |
       multiplicative
     }
 
     rule(:multiplicative) {
       ( primary.as(:left) >> space? >>
-        ( op_multiply | op_divide ).as(:op) >> space >>
+        ( op_multiply | op_divide ).as(:op) >> space? >>
         multiplicative.as(:right) ) |
       primary
     }
