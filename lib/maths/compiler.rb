@@ -106,6 +106,7 @@ module Maths
       def run
         @output = Maths::Parser.new.parse_with_debug(@input)
         pp @output if @print_tree
+        fail "Parse failed" unless @output
         run_next
       end
     end
