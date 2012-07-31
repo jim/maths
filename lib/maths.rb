@@ -4,5 +4,6 @@ module Maths
   autoload :Environment, 'maths/environment'
   autoload :Parser,      'maths/parser'
   autoload :Transform,   'maths/transform'
+  autoload :REPL,        'maths/repl'
   autoload :Runtime,     'maths/runtime'
 end

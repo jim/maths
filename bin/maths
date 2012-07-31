@@ -9,19 +9,6 @@ $LOAD_PATH << File.expand_path('../../lib', __FILE__)
 
 require 'maths'
 
-def repl
-  env = Maths::Environment.new
-  require 'readline'
-  puts "Welcome to maths. Type 'exit' to quit."
-  line = 1
-  loop do
-    code = Readline.readline "maths> "
-    exit 0 unless code and code != "exit"
-    next if code =~ /^\s*$/
-    puts env.eval(code)
-  end
-end
-
 options = OpenStruct.new
 options.run = true
 
@@ -40,16 +27,16 @@ files = OptionParser.new do |opts|
     options.sexp = s
   end
 
-  opts.on('-r', '--[no-]run', 'Execute the code') do |r|
+  opts.on('-r', '--[no-]run', 'Execute the code; defaults to true') do |r|
     options.run = r
   end
 end.permute!
 
 if files.any? && options.run
   env = Maths::Environment.new
+
   files.each do |file|
     code = File.read(file)
-
     env.eval(code, file) do |compiler|
       compiler.parser.print_tree if options.parse
       compiler.transform.print_ast if options.graph
@@ -57,5 +44,5 @@ if files.any? && options.run
     end
   end
 elsif $stdin.tty?
-  repl
+  Maths::REPL.new.start
 end
