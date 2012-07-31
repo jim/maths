@@ -62,7 +62,7 @@ describe Maths do
     assert_equal  0, maths('6 / 2 - 3')
   end
 
-  it 'allows parenthesis to manipulate eval order' do
+  it 'allows parentheses to manipulate eval order' do
     assert_equal  9, maths('(1 + 2) * 3')
     assert_equal 16, maths('2 * (3 + 5)')
   end
@@ -79,7 +79,7 @@ describe Maths do
     maths('a=3')
   end
 
-  it 'does not require spaces around parenthesis' do
+  it 'does not require spaces around parentheses' do
     maths('4*(9-2)')
   end
 
