@@ -84,7 +84,7 @@ describe Maths do
   end
 
   it 'raises an exception when referencing an undefined variable' do
-    assert_raises RuntimeError do
+    assert_raises Maths::Runtime::Error do
       maths('a')
     end
   end

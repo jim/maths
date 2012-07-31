@@ -202,14 +202,17 @@ module Maths
         end
 
         if @variable.nil?
-          g.push_const :RuntimeError
+          g.push_const :Maths
+          g.find_const :Runtime
+          g.find_const :Error
+          g.push_literal @line
+          g.push_literal @column
           g.push_literal "Reference to undefined variable '#{@name}'"
-          g.send :new, 1
+          g.send :new, 3
           g.raise_exc
-          return
+        else
+          @variable.get_bytecode(g)
         end
-
-        @variable.get_bytecode(g)
       end
 
       def to_sexp
