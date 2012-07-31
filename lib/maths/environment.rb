@@ -8,8 +8,8 @@ module Maths
                                           self)
     end
 
-    def eval(string, filename = '(maths)')
-      cm = Maths::Compiler::compile(string) do |c|
+    def eval(string, filename='(maths)', line=1)
+      cm = Maths::Compiler::compile(string, filename, line) do |c|
         c.generator.variable_scope = @binding.variables
         yield c if block_given?
       end

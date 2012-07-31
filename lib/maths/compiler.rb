@@ -7,6 +7,7 @@ module Maths
       compiler = new :maths_parser, :compiled_method
       compiler.parser.input string
       compiler.generator.line_number line_number
+      compiler.transform.line_number line_number
       compiler.generator.file_name file_name
       yield compiler if block_given?
       compiler.run
@@ -66,6 +67,11 @@ module Maths
       def initialize(compiler, last)
         super
         compiler.transform = self
+        @line_number = 1
+      end
+
+      def line_number(number)
+        @line_number = number
       end
 
       def print_ast(enable=true)
@@ -77,7 +83,7 @@ module Maths
       end
 
       def run
-        @output = Maths::Transform.new.apply(@input)
+        @output = Maths::Transform.new.apply(@input, offset: @line_number - 1)
         @output.graph if @print_ast
         pp @output.to_sexp if @print_sexp
         run_next
