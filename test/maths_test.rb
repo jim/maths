@@ -1,8 +1,4 @@
-require 'minitest/spec'
-require 'minitest/autorun'
-
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'maths'
+require 'test_helper'
 
 def maths(code)
   @env.eval(code)
