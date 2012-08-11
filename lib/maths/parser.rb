@@ -21,18 +21,18 @@ module Maths
     rule(:right_paren)  { str(')') }
 
     rule(:integer)  {
-      ( str('-').maybe >> match('[0-9]').repeat(1) ).as(:int)
+      ( str('-').maybe >> match['\d'].repeat(1) ).as(:int)
     }
 
     rule(:decimal) {
       ( str('-').maybe >>
-        match('[0-9]').repeat >>
+        match['\d'].repeat >>
         str('.') >>
-        match('[0-9]').repeat(1)
+        match['\d'].repeat(1)
       ).as(:decimal)
     }
 
-    rule(:variable) { match('[a-z]').repeat(1).as(:var) }
+    rule(:variable) { match['a-z'].repeat(1).as(:var) }
 
     rule(:print) {
       ( str('Print') >> space >> expression ).as(:print)
@@ -72,7 +72,7 @@ module Maths
       print | expression | empty
     }
 
-    rule(:script) { (line >> ( line_break >> line ).repeat(0)).as(:script) }
+    rule(:script) { (line >> ( line_break >> line ).repeat).as(:script) }
 
     root(:script)
   end
