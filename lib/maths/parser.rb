@@ -29,7 +29,7 @@ module Maths
         match['\d'].repeat >>
         str('.') >>
         match['\d'].repeat(1)
-      ).as(:decimal)
+      ).as(:dec)
     }
 
     rule(:variable) { match['a-z'].repeat(1).as(:var) }

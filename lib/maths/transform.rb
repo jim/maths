@@ -21,7 +21,7 @@ module Maths
       Maths::AST::Call.new(l.line + offset.to_i, l.column, l, op.to_sym, r)
     }
 
-    rule(decimal: simple(:x)) {
+    rule(dec: simple(:x)) {
       Maths::AST::Decimal.new(x.line + offset.to_i, x.column, Float(x))
     }
 
