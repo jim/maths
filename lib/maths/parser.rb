@@ -24,12 +24,12 @@ module Maths
       ( str('-').maybe >> match('[0-9]').repeat(1) ).as(:int)
     }
 
-    rule(:float)    {
+    rule(:decimal) {
       ( str('-').maybe >>
-        match('[0-9]').repeat(0) >>
+        match('[0-9]').repeat >>
         str('.') >>
         match('[0-9]').repeat(1)
-      ).as(:float)
+      ).as(:decimal)
     }
 
     rule(:variable) { match('[a-z]').repeat(1).as(:var) }
@@ -62,7 +62,7 @@ module Maths
     rule(:primary) {
       ( left_paren >> space? >> additive >> space? >> right_paren ) |
       variable |
-      float |
+      decimal |
       integer
     }
 

@@ -117,7 +117,7 @@ module Maths
       end
     end
 
-    class Float < Node
+    class Decimal < Node
       def initialize(line, column, value)
         @line = line
         @column = column

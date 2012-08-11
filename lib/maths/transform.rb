@@ -13,7 +13,6 @@ end
 
 module Maths
   class Transform < Parslet::Transform
-
     rule(left: simple(:l), op: '=', right: subtree(:r)) {
       Maths::AST::VariableAssignment.new(l.line + offset.to_i, l.column, l.name, r)
     }
@@ -22,8 +21,8 @@ module Maths
       Maths::AST::Call.new(l.line + offset.to_i, l.column, l, op.to_sym, r)
     }
 
-    rule(float: simple(:x)) {
-      Maths::AST::Float.new(x.line + offset.to_i, x.column, Float(x))
+    rule(decimal: simple(:x)) {
+      Maths::AST::Decimal.new(x.line + offset.to_i, x.column, Float(x))
     }
 
     rule(int: simple(:x)) {
