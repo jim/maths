@@ -90,9 +90,19 @@ module Maths
       end
     end
 
+    class Rewriter < Rubinius::Compiler::Stage
+      stage :maths_rewriter
+      next_stage Maths::Compiler::Transform
+
+      def run
+        @output = Maths::Rewriter.new.apply(@input)
+        run_next
+      end
+    end
+
     class Parser < Rubinius::Compiler::Stage
       stage :maths_parser
-      next_stage Maths::Compiler::Transform
+      next_stage Maths::Compiler::Rewriter
 
       def initialize(compiler, last)
         super

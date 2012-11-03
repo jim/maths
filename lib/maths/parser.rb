@@ -38,25 +38,23 @@ module Maths
       ( str('Print') >> space >> expression ).as(:print)
     }
 
-    rule(:assignment) {
-      ( variable.as(:left) >> space? >>
-        op_assign.as(:op) >> space? >>
-        assignment.as(:right) ) |
-      additive
-    }
-
     rule(:additive) {
-      ( multiplicative.as(:left) >> space? >>
-        ( op_plus | op_minus ).as(:op) >> space? >>
-        additive.as(:right) ) |
+      ( multiplicative.as(:left) >>
+        ( space? >> (op_plus|op_minus).as(:op) >> space? >> multiplicative.as(:right) ).repeat(1) ).as(:split) |
       multiplicative
     }
 
     rule(:multiplicative) {
-      ( primary.as(:left) >> space? >>
-        ( op_multiply | op_divide ).as(:op) >> space? >>
-        multiplicative.as(:right) ) |
+      ( primary.as(:left) >>
+      ( space? >> (op_multiply|op_divide).as(:op) >> space? >> primary.as(:right) ).repeat(1) ).as(:split) |
       primary
+    }
+
+    rule(:assignment) {
+      ( variable.as(:left) >> space? >>
+        op_assign.as(:op) >> space? >>
+        additive.as(:right) ) |
+      additive
     }
 
     rule(:primary) {
@@ -77,6 +75,3 @@ module Maths
     root(:script)
   end
 end
-
-# sources
-# http://nathansuniversity.com/turtle2.html (PEG arithmetic infix notation) 7/17/2012

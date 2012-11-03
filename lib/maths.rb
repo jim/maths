@@ -5,5 +5,6 @@ module Maths
   autoload :Parser,      'maths/parser'
   autoload :Transform,   'maths/transform'
   autoload :REPL,        'maths/repl'
+  autoload :Rewriter,    'maths/rewriter'
   autoload :Runtime,     'maths/runtime'
 end

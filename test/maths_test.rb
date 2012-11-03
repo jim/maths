@@ -47,6 +47,7 @@ describe Maths do
   end
 
   it 'supports proper operator precedence' do
+    assert_equal  2, maths('1 - 2 + 3')
     assert_equal  7, maths('1 + 2 * 3')
     assert_equal -5, maths('1 - 2 * 3')
     assert_equal  3, maths('1 + 6 / 3')
@@ -73,6 +74,10 @@ describe Maths do
 
   it 'does not require spaces around assignments' do
     maths('a=3')
+  end
+
+  it 'evaluates the right side first during variable assignment' do
+    assert_equal 2, maths("a=3-1\na")
   end
 
   it 'does not require spaces around parentheses' do
